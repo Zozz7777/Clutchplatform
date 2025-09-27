@@ -28,6 +28,7 @@ import com.clutch.app.R
 import com.clutch.app.ui.theme.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.clutch.app.ui.components.CompactLoadingIndicator
 import com.clutch.app.utils.TranslationManager
 import com.clutch.app.ui.components.ErrorDialog
 import com.clutch.app.data.repository.ClutchRepository
@@ -218,10 +219,7 @@ fun LoginScreen(
                         enabled = !uiState.isLoading
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
+                            CompactLoadingIndicator()
                         } else {
                             Text(
                                 text = TranslationManager.getString(context, R.string.login),

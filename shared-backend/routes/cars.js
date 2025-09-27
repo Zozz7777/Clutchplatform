@@ -91,7 +91,7 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
   }
 });
 
-// Get user's cars
+// Get user's cars with performance optimizations
 router.get('/user-cars', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId || req.user.id;
@@ -103,22 +103,53 @@ router.get('/user-cars', authenticateToken, async (req, res) => {
       });
     }
 
-    // Use native MongoDB client
+    // Add pagination for better performance
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Use native MongoDB client with optimized query
     const carsCollection = await getCollection('cars');
     
-    // Query with native MongoDB
+    // Optimized query with field selection and pagination
     const cars = await carsCollection.find({ 
       userId: userId, 
       isActive: true 
+    }, {
+      projection: {
+        _id: 1,
+        year: 1,
+        brand: 1,
+        model: 1,
+        trim: 1,
+        color: 1,
+        licensePlate: 1,
+        currentMileage: 1,
+        createdAt: 1
+        // Exclude heavy fields like maintenance history, documents, etc.
+      }
     })
     .sort({ createdAt: -1 })
-    .maxTimeMS(5000) // 5 second timeout
+    .skip(skip)
+    .limit(limit)
+    .maxTimeMS(3000) // Reduced timeout for faster response
     .toArray();
+
+    // Get total count for pagination
+    const totalCount = await carsCollection.countDocuments({ 
+      userId: userId, 
+      isActive: true 
+    });
     
     res.json({
       success: true,
       data: cars,
-      count: cars.length
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        pages: Math.ceil(totalCount / limit)
+      }
     });
   } catch (error) {
     console.error('Error fetching user cars:', error);

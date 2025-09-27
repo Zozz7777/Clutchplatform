@@ -142,8 +142,8 @@ class ClutchRepository @Inject constructor(
                     val brands = apiResponse.data as List<Map<String, Any>>
                     val carBrands = brands.map { brandMap ->
                         CarBrand(
-                            id = brandMap["_id"] as String,
-                            name = brandMap["name"] as String,
+                            id = brandMap["_id"] as? String ?: "",
+                            name = brandMap["name"] as? String ?: "",
                             logo = brandMap["logo"] as? String,
                             isActive = brandMap["isActive"] as? Boolean ?: true
                         )
@@ -169,10 +169,10 @@ class ClutchRepository @Inject constructor(
                     val models = apiResponse.data as List<Map<String, Any>>
                     val carModels = models.map { modelMap ->
                         CarModel(
-                            id = modelMap["_id"] as String,
-                            brandId = modelMap["brandId"] as String,
-                            brandName = modelMap["brandName"] as String,
-                            name = modelMap["name"] as String,
+                            id = modelMap["_id"] as? String ?: "",
+                            brandId = modelMap["brandId"] as? String ?: "",
+                            brandName = modelMap["brandName"] as? String ?: "",
+                            name = modelMap["name"] as? String ?: "",
                             yearStart = modelMap["yearStart"] as? Int,
                             yearEnd = modelMap["yearEnd"] as? Int,
                             isActive = modelMap["isActive"] as? Boolean ?: true
@@ -199,11 +199,11 @@ class ClutchRepository @Inject constructor(
                     val trims = apiResponse.data as List<Map<String, Any>>
                     val carTrims = trims.map { trimMap ->
                         CarTrim(
-                            id = trimMap["_id"] as String,
-                            modelId = trimMap["modelId"] as String,
-                            brandName = trimMap["brandName"] as String,
-                            modelName = trimMap["modelName"] as String,
-                            name = trimMap["name"] as String,
+                            id = trimMap["_id"] as? String ?: "",
+                            modelId = trimMap["modelId"] as? String ?: "",
+                            brandName = trimMap["brandName"] as? String ?: "",
+                            modelName = trimMap["modelName"] as? String ?: "",
+                            name = trimMap["name"] as? String ?: "",
                             isActive = trimMap["isActive"] as? Boolean ?: true
                         )
                     }

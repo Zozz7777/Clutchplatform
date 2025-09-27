@@ -29,6 +29,7 @@ import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.utils.TranslationManager
 import com.clutch.app.ui.viewmodel.BrandSelectionViewModel
+import com.clutch.app.ui.components.LoadingIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,12 +111,10 @@ fun BrandSelectionScreen(
             // Brands List
             when {
                 uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = ClutchRed)
-                    }
+                    LoadingIndicator(
+                        message = "Loading brands...",
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
                 uiState.errorMessage != null -> {
                     Box(

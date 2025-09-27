@@ -26,6 +26,7 @@ import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.ui.components.ErrorDialog
+import com.clutch.app.ui.components.CompactLoadingIndicator
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalContext
@@ -295,10 +296,7 @@ fun SignupScreen(
                 enabled = !uiState.isLoading
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    CompactLoadingIndicator()
                 } else {
                     Text(TranslationManager.getString(context, R.string.sign_up), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
